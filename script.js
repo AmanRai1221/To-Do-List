@@ -1,22 +1,40 @@
-let hour = document.getElementById('hour')
-let minute = document.getElementById('minute')
-let second = document.getElementById('second')
+let listContainer = document.getElementById('list-container')
+let inputBox = document.getElementById('input-box')
 
-function displayTime(){
-    let date = new Date();
+function addTask(){
+    if(inputBox.value === ''){
+        alert('Add Your Task')
+    }
+    else{
+        let task = document.createElement('li')
+        task.textContent = inputBox.value
+        listContainer.appendChild(task)
 
-    let hh = date.getHours();
-    let mm = date.getMinutes();
-    let ss = date.getSeconds();
-
-    let hRotation = 30* hh + mm/2 + ss/120;
-    let mRotation = 6* mm + ss/10;
-    let sRotation = 6* ss;    
-
-    hour.style.transform = `rotate(${hRotation}deg)`
-    minute.style.transform = `rotate(${mRotation}deg)`
-    second.style.transform = `rotate(${sRotation}deg)`
-
+        let span = document.createElement('span');
+        span.textContent = '\u00d7';
+        task.appendChild(span)
+    }
+    inputBox.value = ''
+    saveData()
 }
 
-setInterval(displayTime, 1000)
+listContainer.addEventListener('click', (el)=>{
+    if(el.target.tagName == 'LI'){
+        el.target.classList.toggle('checked')
+        saveData()
+    }
+    else if(el.target.tagName == 'SPAN'){
+        el.target.parentElement.remove()
+        saveData()
+    }
+})
+
+function saveData(){
+    localStorage.setItem("tasks", listContainer.innerHTML)
+}
+
+function showData(){
+    listContainer.innerHTML = localStorage.getItem('tasks')
+}
+
+showData()
